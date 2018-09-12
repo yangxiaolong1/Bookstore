@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.bookstore.dao.UserDao">
+
+    <resultMap id="userResultMap" type="com.bookstore.bean.User">
+        <id property="id" column="id" />
+        <id property="username" column="username" />
+        <id property="password" column="password" />
+        <id property="phone" column="phone" />
+        <id property="relname" column="relname" />
+        <id property="sex" column="sex" />
+        <id property="address" column="address" />
+        <id property="email" column="email" />
+
+        <association property="unit" column="unit_id" select="selectUnitById" />
+    </resultMap>
+
+    <select id="selectByUname" resultMap="userResultMap" parameterType="java.lang.String">
+        SELECT * FROM tb_user WHERE username=#{username}
+    </select>
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id" parameterType="com.bookstore.bean.User">
+        INSERT INTO tb_user (username,password,phone,realname,sex,address,email)
+        VALUES(#{username},#{password},#{phone},#{realname},#{sex},#{address},#{email})
+    </insert>
+    <select id="selectById" resultMap="userResultMap" parameterType="java.lang.Long">
+        SELECT * FROM tb_user WHERE id=#{id}
+    </select>
+    <update id="updateById" parameterType="com.bookstore.bean.User">
+        UPDATE tb_user
+        <set>
+            <if test="username != null">username=#{username},</if>
+            <if test="password != null">password=#{password},</if>
+            <if test="phone != null">phone=#{phone},</if>
+            <if test="relname != null">relname=#{relname},</if>
+            <if test="sex != null">sex=#{sex},</if>
+            <if test="address != null">address=#{address},</if>
+            <if test="email != null">email=#{email},</if>
+        </set>
+        WHERE id=#{id}
+    </update>
+    <delete id="deleteById">
+        DELETE FROM tb_user WHERE id IN
+        <foreach item="item" index="index" collection="array" open="(" close=")" separator=",">
+            #{item}
+        </foreach>
+    </delete>
+
+
+</mapper>
